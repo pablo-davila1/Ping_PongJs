@@ -10,7 +10,7 @@
     self.Board.prototype ={
         get elements(){
             var elements = this.bars;
-            elements.push(this.ball);
+            //elements.push(this.ball);
             return elements;
         }
     };
@@ -30,10 +30,10 @@
     }
 
     self.Bar.prototype={ // quiiiiiii <-------- 
-        down:function(){
+        down: function(){
             this.y += this.speed;
         },
-        up:function(){
+        up: function(){
             this.y -= this.speed;
         },
         toString: function(){
@@ -45,6 +45,7 @@
 
 (function(){
     self.BoardView = function(canvas,board){
+
         this.canvas=canvas;
         this.canvas.width= board.width;
         this.canvas.height= board.height;
@@ -54,6 +55,10 @@
     }
 
     self.BoardView.prototype = {
+        clean: function(){
+            this.ctx.clearRect(0,0,this.board.width,this.   board.height);
+        },
+
         draw: function(){
             for(var i = this.board.elements.length -1 ; i>=0; i--){
                 var el = this.board.elements[i];
@@ -63,39 +68,54 @@
     }   
 
     function draw(ctx,element){                                     //<----------
-        if(element != null && element.hasOwnProperty("kind")){
+        //if(element != null && element.hasOwnProperty("kind")){
             switch(element.kind){
                 case "rectangle":
                     ctx.fillRect(element.x,element.y, element.width, element.height);
                     break;
                     
             }
-        }
+        //}
 
     }
 })();
 
 var board = new Board(800,400);//
 var bar = new Bar(20,100,40,100,board);
-var bar = new Bar(735,100,40,100,board);
+var bar_2 = new Bar(735,100,40,100,board);
 var canvas = document.getElementById("canvas");
 var board_view = new BoardView(canvas,board);//
 
+
 document.addEventListener("keydown",function(ev){
+    ev.preventDefault();
     if(ev.keyCode == 38){
-        bar.up;
+        bar.up();
         console.log("arriba")
     }
     else if(ev.keyCode == 40){
-        bar.down;
+        bar.down();
     }
+    else if(ev.keyCode == 87){
+        //w
+        bar_2.up();
+    }
+    else if(ev.keyCode == 83){
+        //s
+        bar_2.down(); 
+    }
+
+    console.log(""+bar);
+    console.log(""+bar_2);
 });
 
 
 
-window.addEventListener("load",main);
+//window.addEventListener("load",main);
+window.requestAnimationFrame(main);
 
 function main(){
-
+    board_view.clean();
     board_view.draw();
+    window.requestAnimationFrame(main);
 }
